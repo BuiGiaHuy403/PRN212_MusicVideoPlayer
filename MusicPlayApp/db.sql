@@ -1,0 +1,29 @@
+CREATE DATABASE MusicPlayerApp;
+GO
+CREATE TABLE Users (
+    UserId INT PRIMARY KEY IDENTITY(1,1),
+    UserName NVARCHAR(50) ,
+    Password NVARCHAR(256) 
+);
+CREATE TABLE Songs (
+    SongId INT PRIMARY KEY IDENTITY(1,1),
+    Title NVARCHAR(100) NOT NULL,
+    Artist NVARCHAR(100) NOT NULL,
+    Album NVARCHAR(256),
+);
+CREATE TABLE Playlists (
+    PlaylistId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT,
+    SongId INT,
+    PlaylistName NVARCHAR(100),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (SongId) REFERENCES Songs(SongId) ON DELETE CASCADE
+);
+CREATE TABLE FavoriteLists (
+    FavoriteListId INT IDENTITY(1,1) PRIMARY KEY,
+    UserId INT,
+    SongId INT,
+    ListName NVARCHAR(100),
+    FOREIGN KEY (UserId) REFERENCES Users(UserId) ON DELETE CASCADE,
+    FOREIGN KEY (SongId) REFERENCES Songs(SongId) ON DELETE CASCADE
+);
