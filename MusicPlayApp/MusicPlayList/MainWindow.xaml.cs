@@ -462,11 +462,11 @@ namespace MusicPlayList
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            _songService.RemoveSongAsync(selectedSong);  // Xóa bài hát khỏi cơ sở dữ liệu
+                            await _songService.RemoveSongAsync(selectedSong);  // Xóa bài hát khỏi cơ sở dữ liệu
 
                             // Tải lại Playlist và Favorite List để cập nhật thay đổi
                             playlistListBox.ItemsSource = null;
-                            LoadTitleAllSongs();
+                            await LoadTitleAllSongs();
                             FavoriteListBox.ItemsSource = null;
                             await LoadFavoriteList();
                         }
@@ -486,11 +486,19 @@ namespace MusicPlayList
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            await _favoriteService.RemoveFavoriteAsync(selectedSong.SongId.Value);
+                            if (selectedSong.SongId.HasValue)
+                            {
+                                await _favoriteService.RemoveFavoriteAsync(CurrentUser.UserId, selectedSong.SongId.Value);
 
-                            // Tải lại danh sách yêu thích
-                            FavoriteListBox.ItemsSource = null;
-                            await LoadFavoriteList();
+
+                                // Tải lại danh sách yêu thích
+                                FavoriteListBox.ItemsSource = null;
+                                await LoadFavoriteList();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Bài hát không có ID hợp lệ.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
                     }
                 }
@@ -504,8 +512,6 @@ namespace MusicPlayList
                 MessageBox.Show($"Đã xảy ra lỗi khi xóa bài hát: {ex.Message}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
-
-
 
         private async void Addbtn_Click(object sender, RoutedEventArgs e)
         {
