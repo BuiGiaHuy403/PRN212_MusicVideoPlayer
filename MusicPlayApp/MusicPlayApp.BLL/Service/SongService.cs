@@ -21,9 +21,9 @@ namespace MusicPlayApp.BLL.Service
             return await _songRepository.GetAllSongsAsync();
         }
 
-        public async Task<List<Song>> GetSongsByUserIdAsync(int userId)
+        public async Task<List<Song>> GetAllSongsdAsync()
         {
-            return await _songRepository.GetSongsByUserIdAsync(userId);
+            return await _songRepository.GetAllSongsAsync();
         }
 
         public async Task AddSongAsync(Song song)

@@ -39,19 +39,12 @@ namespace MusicPlayList
         private readonly UserService _userService;
         private readonly FavoriteService _favoriteService;
 
-        public MusicPlayApp.DAL.Entities.User? CurrentUser { get; set; }
-
+        
         private bool isFullScreen = false; // Thêm biến theo dõi trạng thái full screen
 
-        public MainWindow(MusicPlayApp.DAL.Entities.User currentUser)
+        public MainWindow()
         {
             InitializeComponent();
-            CurrentUser = currentUser;
-            if (CurrentUser == null)
-            {
-                MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Close();
-            }
             InitializePlayer();
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
             mediaPlayer.MouseLeftButtonDown += MediaPlayer_MouseLeftButtonDown;
@@ -99,28 +92,21 @@ namespace MusicPlayList
         private async void InitializeFavoriteList()
         {
             try
-            {
-                if (CurrentUser != null)
-                {
-                    int userId = CurrentUser.UserId;
-
+            {              
                     // Get the list of favorite songs
-                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
 
                     // Populate the favoriteList with the fetched songs
                     favoriteList = favoriteSongs;
 
                     // Clear and reload the FavoriteListBox
                     FavoriteListBox.Items.Clear();
-                    foreach (var song in favoriteList)
+                    foreach (var song in favoriteSongs)
                     {
                         FavoriteListBox.Items.Add(song);  // Add the song to the FavoriteListBox
                     }
-                }
-                else
-                {
-                    MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                
+                
             }
             catch (Exception ex)
             {
@@ -181,22 +167,19 @@ namespace MusicPlayList
             {
                 mediaPlayer.Pause();
                 isPlaying = false;
-                PauseButton.Content = "Continue";
-                PauseButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1DB954"));
-
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("play.png", UriKind.Relative));
                 timer.Stop(); // Stop the timer to pause the rotation of the disc
             }
             else
             {
                 mediaPlayer.Play();
                 isPlaying = true;
-                PauseButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8c1010"));
-                PauseButton.Content = "Pause";
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                 timer.Start();
             }
         }
 
-     
+
 
         private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -219,13 +202,23 @@ namespace MusicPlayList
 
             if (isShuffle)
             {
-                PlaybackModeButton.Content = "Shuffle";
-                PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1DB954"));
+                // Update icon and text simultaneously
+
+
+                // Change button background color
+                PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF34CCFF"));
+
+                // Show message box
                 MessageBox.Show("Chế độ phát ngẫu nhiên đã được kích hoạt.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
+                // Update icon and text simultaneously
+
+                // Change button background color
                 PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#333333"));
+
+                // Show message box
                 MessageBox.Show("Chế độ phát tuần tự đã được kích hoạt.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -328,13 +321,14 @@ namespace MusicPlayList
                         mediaPlayer.Play();
                         timer.Start();
                         txtText.Text = $"{selectedSong.Title}  {selectedSong.Artist}";
+                        PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                     }
                     else
                     {
                         MessageBox.Show($"File not found: {filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-              
+
             }
             else
             {
@@ -365,16 +359,16 @@ namespace MusicPlayList
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-           
+
 
         }
 
         private void LoadBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
-        private bool isPlayingFromFavoriteList = false;  
+        private bool isPlayingFromFavoriteList = false;
         private bool isPlayingFromPlaylist = false;
 
 
@@ -384,7 +378,7 @@ namespace MusicPlayList
             {
                 // Reset the pause/play button state
                 isPlaying = false;
-                PauseButton.Content = "Play"; // Set to "Play" as initial state
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
 
                 isPlayingFromFavoriteList = true;
                 isPlayingFromPlaylist = false;
@@ -413,7 +407,8 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                         else
                         {
@@ -426,7 +421,8 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                     }
                     else
@@ -483,7 +479,7 @@ namespace MusicPlayList
 
                     var selectedSong = FavoriteListBox.SelectedItem as Song;
 
-                    if (selectedSong != null && CurrentUser != null)
+                    if (selectedSong != null )
                     {
                         var result = MessageBox.Show($"Bạn có chắc chắn muốn xóa '{selectedSong.Title}' khỏi danh sách yêu thích?",
                                                      "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
@@ -493,6 +489,7 @@ namespace MusicPlayList
                             if (selectedSong.SongId.HasValue)
                             {
                                 await _favoriteService.RemoveFavoriteAsync(CurrentUser.UserId, selectedSong.SongId.Value);
+
 
                                 // Tải lại danh sách yêu thích
                                 FavoriteListBox.ItemsSource = null;
@@ -531,15 +528,11 @@ namespace MusicPlayList
                         int songId = (int)selectedSong.SongId;
                         Console.WriteLine($"Song ID: {songId}");
 
-                        // Check the current user
-                        if (CurrentUser != null)
-                        {
-                            int userId = CurrentUser.UserId; // Get UserId from the logged-in user
-
+                
                             try
                             {
                                 // Check if the song is already in the user's favorite list
-                                var existingFavorite = await _favoriteService.CheckIfFavoriteExistsAsync(userId, songId);
+                                var existingFavorite = await _favoriteService.CheckIfFavoriteExistsAsync(songId);
 
                                 if (existingFavorite)
                                 {
@@ -549,7 +542,7 @@ namespace MusicPlayList
                                 else
                                 {
                                     // Call service to add the song to the favorite list
-                                    await _favoriteService.AddFavoriteAsync(userId, songId, "My Favorite List");
+                                    await _favoriteService.AddFavoriteAsync(songId, "My Favorite List");
                                     // Reload the favorite list
                                     await LoadFavoriteList();
 
@@ -562,11 +555,7 @@ namespace MusicPlayList
                                 MessageBox.Show($"An error occurred while adding the song to the favorite list: {ex.Message}",
                                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Please log in to add songs to your favorite list.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        
                     }
                     else
                     {
@@ -588,14 +577,12 @@ namespace MusicPlayList
 
         private async Task LoadFavoriteList()
         {
-            if (CurrentUser != null)
-            {
+            
                 try
                 {
-                    int userId = CurrentUser.UserId;
-
+                    
                     // Lấy danh sách bài hát yêu thích
-                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
                     // Làm sạch danh sách trước khi thêm mới
                     FavoriteListBox.Items.Clear();
 
@@ -611,16 +598,12 @@ namespace MusicPlayList
                     MessageBox.Show($"An error occurred while loading favorite songs: {ex.Message}",
                                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-            else
-            {
-                MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            
         }
 
         private void playlistListBox_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
 
         }
 
@@ -667,7 +650,8 @@ namespace MusicPlayList
             {
                 // Reset the pause/play button state
                 isPlaying = false;
-                PauseButton.Content = "Play";
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
 
                 isPlayingFromPlaylist = true;  // Mark as playing from Playlist
                 isPlayingFromFavoriteList = false;  // Stop playing from Favorite List
@@ -686,7 +670,7 @@ namespace MusicPlayList
                     if (File.Exists(album))
                     {
                         string fileExtension = System.IO.Path.GetExtension(album).ToLower();
-                        if (fileExtension == ".mp3" || fileExtension == ".wav")
+                        if (fileExtension == ".mp3" || fileExtension == ".wav" || fileExtension == ".flac")
                         {
                             // Audio file: Show disk and play audio
                             cdContainer.Visibility = Visibility.Visible;
@@ -698,13 +682,14 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true; // Set playing to true as the song starts playing automatically
-                            PauseButton.Content = "Pause"; // Set the button to "Pause" as it's playing now
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                         else
                         {
                             // Non-audio file (video): Show video and hide the disk
                             cdContainer.Visibility = Visibility.Collapsed;
-                            CDImage.Visibility = Visibility.Collapsed;
+                            CDImage.Visibility = Visibility.Visible;
                             mediaPlayer.Visibility = Visibility.Visible;
                             StopRotatingDisk();
 
@@ -712,7 +697,7 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                         }
                     }
                     else
@@ -733,7 +718,7 @@ namespace MusicPlayList
             }
         }
 
-        private List<Song> favoriteList = new List<Song>(); 
+        private List<Song> favoriteList = new List<Song>();
 
         private List<int> playedIndices = new List<int>();
 
@@ -877,7 +862,7 @@ namespace MusicPlayList
                     addSongWindow.SelectedOne = selectedSong;
                     addSongWindow.ShowDialog();
 
-                    
+
                     playlistListBox.ItemsSource = null;
                     LoadTitleAllSongs();
                 }
@@ -951,7 +936,7 @@ namespace MusicPlayList
                 totalTimeText.Visibility = Visibility.Collapsed;
                 TimeCount.Visibility = Visibility.Collapsed;
                 PauseButton.Visibility = Visibility.Collapsed;
-                PlayMode.Visibility = Visibility.Collapsed;
+                //PlayMode.Visibility = Visibility.Collapsed;
 
                 isFullScreen = true;
             }
@@ -972,33 +957,12 @@ namespace MusicPlayList
                 totalTimeText.Visibility = Visibility.Visible;
                 TimeCount.Visibility = Visibility.Visible;
                 PauseButton.Visibility = Visibility.Visible;
-                PlayMode.Visibility = Visibility.Visible;
+                //PlayMode.Visibility = Visibility.Visible;
 
                 isFullScreen = false;
             }
         }
 
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            // Stop any playing music
-            if (isPlaying)
-            {
-                StopMusic();
-            }
-            var result = MessageBox.Show("Do you really want to logout", "Logout Confirmation", MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                MainWindow mainWindow = new MainWindow(CurrentUser);
-                // Clear the current user session
-                CurrentUser = null;
-                this.Close();
-                // Navigate to the login window
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.ShowDialog();
-            }
-            return;
-        }
         private void StopMusic()
         {
             isPlaying = false;
@@ -1060,7 +1024,7 @@ namespace MusicPlayList
             var filteredPlaylistSongs = await _songService.SearchSongsAsync(query);
 
             // Search in the favorite list
-            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(CurrentUser.UserId);
+            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
             var filteredFavoriteSongs = favoriteSongs.Where(s => s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query)).ToList();
 
             // Update the playlistListBox

@@ -17,19 +17,19 @@ namespace MusicPlayApp.BLL.Service
             _songRepository = new SongRepository();
         }
 
-        public async Task AddFavoriteAsync(int userId, int songId, string listName)
+        public async Task AddFavoriteAsync(int songId, string listName)
         {
-            await _favoriteRepo.AddFavoriteAsync(userId, songId, listName);
+            await _favoriteRepo.AddFavoriteAsync(songId, listName);
         }
         // Kiểm tra xem bài hát đã có trong danh sách yêu thích của người dùng chưa
-        public async Task<bool> CheckIfFavoriteExistsAsync(int userId, int songId)
+        public async Task<bool> CheckIfFavoriteExistsAsync(int songId)
         {
-            var favorite = await _favoriteRepo.GetFavoriteByUserIdAndSongIdAsync(userId, songId);
+            var favorite = await _favoriteRepo.GetFavoriteBySongIdAsync(songId);
             return favorite != null;
         }
-        public async Task<List<Song>> GetFavoritesByUserIdAsync(int userId)
+        public async Task<List<Song>> GetFavoritesByUserIdAsync()
         {
-            List<int?> songIdList = await _favoriteRepo.GetFavoritesByUserIdAsync(userId);
+            List<int?> songIdList = await _favoriteRepo.GetAllFavoritesAsync();
             List<Song> songList = new List<Song>();
             foreach (var songId in songIdList)
             {
@@ -42,10 +42,10 @@ namespace MusicPlayApp.BLL.Service
             return songList;
         }
 
-        public async Task RemoveFavoriteAsync(int userId, int songId)
+        public async Task RemoveFavoriteAsync(int songId)
         {
             FavoriteRepo favoriteRepo = new FavoriteRepo();
-            await favoriteRepo.RemoveFavoriteAsync(userId, songId);
+            await favoriteRepo.RemoveFavoriteAsync(songId);
         }
         
     }
