@@ -4,7 +4,7 @@
     xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="av" x:Class="MusicPlayList.MainWindow"
-    Title="Music/Video Player" Height="700" Width="1100" WindowStartupLocation="CenterScreen"
+    Title="Music/Video Player" Height="800" Width="1300" WindowStartupLocation="CenterScreen"
     Background="#121212">
 
     <Window.Resources>
@@ -150,7 +150,7 @@
                                 Opacity="0.3" Color="#000000"/>
             </Border.Effect>
             <DockPanel>
-                <Border DockPanel.Dock="Top" Background="#1DB954">
+                <Border DockPanel.Dock="Top" Background="#FF34CCFF">
                     <TextBlock Text="Song/Videos" FontWeight="Bold" 
                              Foreground="White" FontSize="18" 
                              Margin="20,15"/>
@@ -285,9 +285,11 @@
                 <StackPanel Orientation="Horizontal" 
                             HorizontalAlignment="Center" 
                             Margin="0,25">
-                    <Button Content="Previous" Width="90" 
+                    <Button Width="90" 
                             Style="{StaticResource ModernButton}"
-                            Click="Button_Click_1"/>
+                            Click="Button_Click_1">
+                        <Image Source="next-button.png"></Image>
+                    </Button>
                     <Button x:Name="PauseButton" 
                             Content="Pause" 
                             Width="90"
@@ -321,7 +323,7 @@
                                 Opacity="0.3" Color="#000000"/>
             </Border.Effect>
             <DockPanel>
-                <Border DockPanel.Dock="Top" Background="#1DB954">
+                <Border DockPanel.Dock="Top" Background="#FF34CCFF">
                     <TextBlock Text="Favorite List" 
                              FontWeight="Bold" Foreground="White" 
                              FontSize="18" Margin="20,15"/>
