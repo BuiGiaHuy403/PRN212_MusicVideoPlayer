@@ -181,22 +181,19 @@ namespace MusicPlayList
             {
                 mediaPlayer.Pause();
                 isPlaying = false;
-                PauseButton.Content = "Continue";
-                PauseButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1DB954"));
-
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("play.png", UriKind.Relative));
                 timer.Stop(); // Stop the timer to pause the rotation of the disc
             }
             else
             {
                 mediaPlayer.Play();
                 isPlaying = true;
-                PauseButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#8c1010"));
-                PauseButton.Content = "Pause";
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                 timer.Start();
             }
         }
 
-     
+
 
         private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
@@ -219,13 +216,23 @@ namespace MusicPlayList
 
             if (isShuffle)
             {
-                PlaybackModeButton.Content = "Shuffle";
-                PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#1DB954"));
+                // Update icon and text simultaneously
+
+
+                // Change button background color
+                PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#FF34CCFF"));
+
+                // Show message box
                 MessageBox.Show("Chế độ phát ngẫu nhiên đã được kích hoạt.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
             {
+                // Update icon and text simultaneously
+
+                // Change button background color
                 PlaybackModeButton.Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#333333"));
+
+                // Show message box
                 MessageBox.Show("Chế độ phát tuần tự đã được kích hoạt.", "Thông báo", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
@@ -328,13 +335,14 @@ namespace MusicPlayList
                         mediaPlayer.Play();
                         timer.Start();
                         txtText.Text = $"{selectedSong.Title}  {selectedSong.Artist}";
+                        PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                     }
                     else
                     {
                         MessageBox.Show($"File not found: {filePath}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
-              
+
             }
             else
             {
@@ -365,16 +373,16 @@ namespace MusicPlayList
 
         private void SaveBtn_Click(object sender, RoutedEventArgs e)
         {
-           
+
 
         }
 
         private void LoadBtn_Click(object sender, RoutedEventArgs e)
         {
-            
+
         }
 
-        private bool isPlayingFromFavoriteList = false;  
+        private bool isPlayingFromFavoriteList = false;
         private bool isPlayingFromPlaylist = false;
 
 
@@ -384,7 +392,7 @@ namespace MusicPlayList
             {
                 // Reset the pause/play button state
                 isPlaying = false;
-                PauseButton.Content = "Play"; // Set to "Play" as initial state
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
 
                 isPlayingFromFavoriteList = true;
                 isPlayingFromPlaylist = false;
@@ -413,7 +421,8 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                         else
                         {
@@ -426,7 +435,8 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                     }
                     else
@@ -615,7 +625,7 @@ namespace MusicPlayList
 
         private void playlistListBox_Loaded(object sender, RoutedEventArgs e)
         {
-            
+
 
         }
 
@@ -662,7 +672,8 @@ namespace MusicPlayList
             {
                 // Reset the pause/play button state
                 isPlaying = false;
-                PauseButton.Content = "Play";
+                PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
 
                 isPlayingFromPlaylist = true;  // Mark as playing from Playlist
                 isPlayingFromFavoriteList = false;  // Stop playing from Favorite List
@@ -681,7 +692,7 @@ namespace MusicPlayList
                     if (File.Exists(album))
                     {
                         string fileExtension = System.IO.Path.GetExtension(album).ToLower();
-                        if (fileExtension == ".mp3" || fileExtension == ".wav")
+                        if (fileExtension == ".mp3" || fileExtension == ".wav" || fileExtension == ".flac")
                         {
                             // Audio file: Show disk and play audio
                             cdContainer.Visibility = Visibility.Visible;
@@ -693,13 +704,14 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true; // Set playing to true as the song starts playing automatically
-                            PauseButton.Content = "Pause"; // Set the button to "Pause" as it's playing now
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
+
                         }
                         else
                         {
                             // Non-audio file (video): Show video and hide the disk
                             cdContainer.Visibility = Visibility.Collapsed;
-                            CDImage.Visibility = Visibility.Collapsed;
+                            CDImage.Visibility = Visibility.Visible;
                             mediaPlayer.Visibility = Visibility.Visible;
                             StopRotatingDisk();
 
@@ -707,7 +719,7 @@ namespace MusicPlayList
                             mediaPlayer.Play();
                             timer.Start();
                             isPlaying = true;
-                            PauseButton.Content = "Pause";
+                            PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                         }
                     }
                     else
@@ -728,7 +740,7 @@ namespace MusicPlayList
             }
         }
 
-        private List<Song> favoriteList = new List<Song>(); 
+        private List<Song> favoriteList = new List<Song>();
 
         private List<int> playedIndices = new List<int>();
 
@@ -872,7 +884,7 @@ namespace MusicPlayList
                     addSongWindow.SelectedOne = selectedSong;
                     addSongWindow.ShowDialog();
 
-                    
+
                     playlistListBox.ItemsSource = null;
                     LoadTitleAllSongs();
                 }
@@ -946,7 +958,7 @@ namespace MusicPlayList
                 totalTimeText.Visibility = Visibility.Collapsed;
                 TimeCount.Visibility = Visibility.Collapsed;
                 PauseButton.Visibility = Visibility.Collapsed;
-                PlayMode.Visibility = Visibility.Collapsed;
+                //PlayMode.Visibility = Visibility.Collapsed;
 
                 isFullScreen = true;
             }
@@ -967,7 +979,7 @@ namespace MusicPlayList
                 totalTimeText.Visibility = Visibility.Visible;
                 TimeCount.Visibility = Visibility.Visible;
                 PauseButton.Visibility = Visibility.Visible;
-                PlayMode.Visibility = Visibility.Visible;
+                //PlayMode.Visibility = Visibility.Visible;
 
                 isFullScreen = false;
             }
