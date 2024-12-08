@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="av" x:Class="MusicPlayList.MainWindow"
     Title="Music/Video Player" Height="900" Width="1200" WindowStartupLocation="CenterScreen"
-    Background="#FF030D19">
+    Background="#FF5BA5FF">
 
     <Window.Resources>
         <!-- Modern Button Style -->
@@ -258,6 +258,10 @@
 
             <!-- Player Container -->
             <Grid Grid.Row="1" x:Name="playerContainer">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="426*"/>
+                    <RowDefinition Height="181*"/>
+                </Grid.RowDefinitions>
                 <!-- Media Element -->
                 <MediaElement x:Name="mediaPlayer"
                  MinHeight="300"
@@ -265,15 +269,13 @@
                  LoadedBehavior="Manual" 
                  UnloadedBehavior="Stop"
                  Visibility="Collapsed"
-                 Stretch="Uniform"
-                 HorizontalAlignment="Stretch"
-                 VerticalAlignment="Stretch"/>
+                 Stretch="Uniform" Grid.RowSpan="2"/>
                 <!-- CD Container -->
                 <Border x:Name="cdContainer"
             Width="320" Height="320"
             Visibility="Visible"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+            VerticalAlignment="Top" Margin="0,144,0,0" Grid.RowSpan="2">
                     <Border.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#22FFFFFF" Offset="0"/>
@@ -286,15 +288,15 @@
                     </Border.Effect>
                     <Grid>
                         <Ellipse Width="300" Height="300" Stroke="#33FFFFFF" StrokeThickness="1"/>
-                        <Border Width="280" Height="280" Background="#282828">
+                        <Border Width="300" Height="300" Background="#282828" CornerRadius="100">
                             <Grid>
                                 <Ellipse Width="60" Height="60" 
-                                Fill="#121212"
+                                Fill="#121212" 
                                 Stroke="#FF34CCFF"
                                 StrokeThickness="2"/>
                                 <Image x:Name="CDImage" 
                                Stretch="Uniform"
-                               Width="260" Height="260">
+                               Width="260" Height="260" Margin="20,20,20,20">
                                     <Image.Source>
                                         <BitmapImage UriSource="pack://application:,,,/discimage.png"/>
                                     </Image.Source>
@@ -332,7 +334,7 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock x:Name="currentTimeText" 
                               Text="00:00" 
-                              Foreground="#B3B3B3" 
+                              Foreground="black" 
                               Margin="5,0"/>
                     <Slider x:Name="TimeCount" Grid.Column="1"
                             Style="{StaticResource ModernSlider}"
@@ -342,7 +344,7 @@
                     <TextBlock x:Name="totalTimeText" 
                               Grid.Column="2" 
                               Text="00:00" 
-                              Foreground="#B3B3B3" 
+                              Foreground="black" 
                               Margin="5,0"/>
                 </Grid>
 
@@ -406,7 +408,8 @@
                     <StackPanel Width="407" >
                         <TextBlock x:Name="VolumeText" 
                Text="Volume: 100%" 
-               Foreground="#B3B3B3"
+                                   FontSize="20"
+               Foreground="Black"
                HorizontalAlignment="Center"
                Margin="0,0,0,8"/>
                         <Slider x:Name="volumeSlider" 
@@ -421,7 +424,7 @@
         </Grid>
 
         <!-- Right Panel - Favorites -->
-        <Border Background="#FF232323"  Margin="10,442,10,10" 
+        <Border Background="#FF232323"  Margin="10,432,10,10" 
                 BorderThickness="1" BorderBrush="#333333">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="5" 
