@@ -488,7 +488,7 @@ namespace MusicPlayList
                         {
                             if (selectedSong.SongId.HasValue)
                             {
-                                await _favoriteService.RemoveFavoriteAsync(CurrentUser.UserId, selectedSong.SongId.Value);
+                                await _favoriteService.RemoveFavoriteAsync(selectedSong.SongId.Value);
 
 
                                 // Tải lại danh sách yêu thích
