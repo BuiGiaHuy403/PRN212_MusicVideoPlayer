@@ -14,12 +14,12 @@ namespace MusicPlayApp.DAL.Repository
             return await JsonDatabase.ReadAsync<Song>(FileName);
         }
 
-        public async Task<List<Song>> GetSongsByUserIdAsync(int userId)
+        public async Task<List<Song>> GetAllPlayListSongsAsync()
         {
             var songs = await JsonDatabase.ReadAsync<Song>(FileName);
             var playlists = await JsonDatabase.ReadAsync<Playlist>("playlists.json");
 
-            return songs.Where(s => playlists.Any(p => p.UserId == userId && p.SongIds.Contains(s.SongId ?? 0))).ToList();
+            return songs.Where(s => playlists.Any(p => p.SongIds.Contains(s.SongId ?? 0))).ToList();
         }
 
 

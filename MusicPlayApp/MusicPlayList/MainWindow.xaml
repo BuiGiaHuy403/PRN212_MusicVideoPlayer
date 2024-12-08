@@ -174,7 +174,7 @@
                     <Button Content="Update Music" Style="{StaticResource ModernButton}"
                             x:Name="UpdateButton" Click="UpdateButton_Click" Width="107"/>
                     </StackPanel>
-                    <Button x:Name="Logout" Content="Logout" Background="#ff0000" Style="{StaticResource ModernButton}" Click="Logout_Click"
+                    <Button x:Name="Logout" Content="Logout" Background="#ff0000" Style="{StaticResource ModernButton}"
                     />
                 </StackPanel>
 

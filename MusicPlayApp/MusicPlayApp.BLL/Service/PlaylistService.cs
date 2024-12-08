@@ -17,9 +17,9 @@ namespace MusicPlayApp.BLL.Service
             await _playlistRepo.CreateAsync(playlist);
         }
 
-        public async Task<List<Playlist>> GetPlaylistsByUserIdAsync(int userId)
+        public async Task<List<Playlist>> GetAllPlaylistsAsync()
         {
-            return await _playlistRepo.GetPlaylistsByUserIdAsync(userId);
+            return await _playlistRepo.GetAllPlaylistsAsync();
         }
 
         public async Task AddSongToPlaylistAsync(int songId, int playlistId)

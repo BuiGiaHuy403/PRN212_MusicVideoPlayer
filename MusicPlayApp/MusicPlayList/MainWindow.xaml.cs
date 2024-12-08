@@ -39,19 +39,12 @@ namespace MusicPlayList
         private readonly UserService _userService;
         private readonly FavoriteService _favoriteService;
 
-        public MusicPlayApp.DAL.Entities.User? CurrentUser { get; set; }
-
+        
         private bool isFullScreen = false; // Thêm biến theo dõi trạng thái full screen
 
-        public MainWindow(MusicPlayApp.DAL.Entities.User currentUser)
+        public MainWindow()
         {
             InitializeComponent();
-            CurrentUser = currentUser;
-            if (CurrentUser == null)
-            {
-                MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                Close();
-            }
             InitializePlayer();
             mediaPlayer.MediaEnded += MediaPlayer_MediaEnded;
             mediaPlayer.MouseLeftButtonDown += MediaPlayer_MouseLeftButtonDown;
@@ -99,28 +92,21 @@ namespace MusicPlayList
         private async void InitializeFavoriteList()
         {
             try
-            {
-                if (CurrentUser != null)
-                {
-                    int userId = CurrentUser.UserId;
-
+            {              
                     // Get the list of favorite songs
-                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
 
                     // Populate the favoriteList with the fetched songs
                     favoriteList = favoriteSongs;
 
                     // Clear and reload the FavoriteListBox
                     FavoriteListBox.Items.Clear();
-                    foreach (var song in favoriteList)
+                    foreach (var song in favoriteSongs)
                     {
                         FavoriteListBox.Items.Add(song);  // Add the song to the FavoriteListBox
                     }
-                }
-                else
-                {
-                    MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                
+                
             }
             catch (Exception ex)
             {
@@ -483,14 +469,14 @@ namespace MusicPlayList
 
                     var selectedSong = FavoriteListBox.SelectedItem as Song;
 
-                    if (selectedSong != null && CurrentUser != null)
+                    if (selectedSong != null )
                     {
                         var result = MessageBox.Show($"Bạn có chắc chắn muốn xóa '{selectedSong.Title}' khỏi danh sách yêu thích?",
                                                      "Xác nhận xóa", MessageBoxButton.YesNo, MessageBoxImage.Question);
 
                         if (result == MessageBoxResult.Yes)
                         {
-                            await _favoriteService.RemoveFavoriteAsync(CurrentUser.UserId, selectedSong.SongId.Value);
+                            await _favoriteService.RemoveFavoriteAsync(selectedSong.SongId.Value);
 
                             // Tải lại danh sách yêu thích
                             FavoriteListBox.ItemsSource = null;
@@ -526,15 +512,11 @@ namespace MusicPlayList
                         int songId = (int)selectedSong.SongId;
                         Console.WriteLine($"Song ID: {songId}");
 
-                        // Check the current user
-                        if (CurrentUser != null)
-                        {
-                            int userId = CurrentUser.UserId; // Get UserId from the logged-in user
-
+                
                             try
                             {
                                 // Check if the song is already in the user's favorite list
-                                var existingFavorite = await _favoriteService.CheckIfFavoriteExistsAsync(userId, songId);
+                                var existingFavorite = await _favoriteService.CheckIfFavoriteExistsAsync(songId);
 
                                 if (existingFavorite)
                                 {
@@ -544,7 +526,7 @@ namespace MusicPlayList
                                 else
                                 {
                                     // Call service to add the song to the favorite list
-                                    await _favoriteService.AddFavoriteAsync(userId, songId, "My Favorite List");
+                                    await _favoriteService.AddFavoriteAsync(songId, "My Favorite List");
                                     // Reload the favorite list
                                     await LoadFavoriteList();
 
@@ -557,11 +539,7 @@ namespace MusicPlayList
                                 MessageBox.Show($"An error occurred while adding the song to the favorite list: {ex.Message}",
                                                 "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                             }
-                        }
-                        else
-                        {
-                            MessageBox.Show("Please log in to add songs to your favorite list.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                        }
+                        
                     }
                     else
                     {
@@ -583,14 +561,12 @@ namespace MusicPlayList
 
         private async Task LoadFavoriteList()
         {
-            if (CurrentUser != null)
-            {
+            
                 try
                 {
-                    int userId = CurrentUser.UserId;
-
+                    
                     // Lấy danh sách bài hát yêu thích
-                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(userId);
+                    var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
                     // Làm sạch danh sách trước khi thêm mới
                     FavoriteListBox.Items.Clear();
 
@@ -606,11 +582,7 @@ namespace MusicPlayList
                     MessageBox.Show($"An error occurred while loading favorite songs: {ex.Message}",
                                     "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
-            }
-            else
-            {
-                MessageBox.Show("User not authenticated. Please log in again.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            
         }
 
         private void playlistListBox_Loaded(object sender, RoutedEventArgs e)
@@ -973,27 +945,6 @@ namespace MusicPlayList
             }
         }
 
-        private void Logout_Click(object sender, RoutedEventArgs e)
-        {
-            // Stop any playing music
-            if (isPlaying)
-            {
-                StopMusic();
-            }
-            var result = MessageBox.Show("Do you really want to logout", "Logout Confirmation", MessageBoxButton.YesNo,
-                MessageBoxImage.Question);
-            if (result == MessageBoxResult.Yes)
-            {
-                MainWindow mainWindow = new MainWindow(CurrentUser);
-                // Clear the current user session
-                CurrentUser = null;
-                this.Close();
-                // Navigate to the login window
-                LoginWindow loginWindow = new LoginWindow();
-                loginWindow.ShowDialog();
-            }
-            return;
-        }
         private void StopMusic()
         {
             isPlaying = false;
@@ -1055,7 +1006,7 @@ namespace MusicPlayList
             var filteredPlaylistSongs = await _songService.SearchSongsAsync(query);
 
             // Search in the favorite list
-            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync(CurrentUser.UserId);
+            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
             var filteredFavoriteSongs = favoriteSongs.Where(s => s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query)).ToList();
 
             // Update the playlistListBox
