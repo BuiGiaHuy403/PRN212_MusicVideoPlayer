@@ -17,11 +17,11 @@ namespace MusicPlayApp.DAL.Repository
         //{
         //    return favoritelists.Any() ? (favoritelists.Max(f => f.FavoriteListId) ?? 0) + 1 : 1;
         //}
-        public async Task AddFavoriteAsync(int userId, int songId, string listName)
+        public async Task AddFavoriteAsync(int songId, string listName)
         {
             var favoriteLists = await JsonDatabase.ReadAsync<FavoriteList>(FileName);
 
-            var existingFavorite = favoriteLists.FirstOrDefault(f => f.UserId == userId && f.SongId == songId);
+            var existingFavorite = favoriteLists.FirstOrDefault(f =>  f.SongId == songId);
             if (existingFavorite != null)
             {
                 throw new InvalidOperationException("This song is already in your favorite list.");
@@ -29,7 +29,6 @@ namespace MusicPlayApp.DAL.Repository
 
             var favorite = new FavoriteList
             {
-                UserId = userId,
                 SongId = songId,
                 ListName = listName
             };
@@ -39,28 +38,27 @@ namespace MusicPlayApp.DAL.Repository
         }
 
         // Kiểm tra xem bài hát đã có trong danh sách yêu thích của người dùng chưa
-        public async Task<FavoriteList> GetFavoriteByUserIdAndSongIdAsync(int userId, int songId)
+        public async Task<FavoriteList> GetFavoriteBySongIdAsync(int songId)
         {
             var favoriteLists = await JsonDatabase.ReadAsync<FavoriteList>(FileName);
-            return favoriteLists.FirstOrDefault(f => f.UserId == userId && f.SongId == songId);
+            return favoriteLists.FirstOrDefault(f => f.SongId == songId);
         }
 
 
-        public async Task<List<int?>> GetFavoritesByUserIdAsync(int userId)
+        public async Task<List<int?>> GetAllFavoritesAsync()
         {
             var favoriteLists = await JsonDatabase.ReadAsync<FavoriteList>(FileName);
             return favoriteLists
-                .Where(f => f.UserId == userId)
                 .Select(f => f.SongId)
                 .ToList();
         }
 
-        public async Task RemoveFavoriteAsync(int userId, int songId)
+        public async Task RemoveFavoriteAsync(int songId)
         {
 
             // Tìm mục yêu thích dựa trên UserId và SongId
             var favoriteLists = await JsonDatabase.ReadAsync<FavoriteList>(FileName);
-            var favorite = favoriteLists.FirstOrDefault(f => f.UserId == userId && f.SongId == songId);
+            var favorite = favoriteLists.FirstOrDefault(f => f.SongId == songId);
 
             if (favorite != null)
             {

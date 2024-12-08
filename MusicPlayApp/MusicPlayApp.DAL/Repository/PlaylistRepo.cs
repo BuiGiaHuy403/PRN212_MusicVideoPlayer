@@ -24,10 +24,10 @@ namespace MusicPlayApp.DAL.Repository
             }
         }
 
-        public async Task<List<Playlist>> GetPlaylistsByUserIdAsync(int userId)
+        public async Task<List<Playlist>> GetAllPlaylistsAsync()
         {
             var playlists = await JsonDatabase.ReadAsync<Playlist>(FileName);
-            return playlists.Where(p => p.UserId == userId).ToList();
+            return playlists.ToList();
         }
 
         public async Task RemoveSongFromPlaylistAsync(int songId, int playlistId)
