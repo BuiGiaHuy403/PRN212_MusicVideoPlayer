@@ -34,12 +34,21 @@ namespace MusicPlayList
             string artist = ArtistTextBox.Text;
             string albumFilePath = AlbumTextBox.Text;
 
+            if (SongsListBox.SelectedItem is Song selectedSong)
+            {
+                selectedSong.Title = title;
+                selectedSong.Artist = artist;
+                selectedSong.Album = albumFilePath;
+                SongsListBox.SelectedItem = null;
+                return;
+            }
+
             if (SelectedOne != null)
             {
                 // Update the song details
                 SelectedOne.Title = TitleTextBox.Text;
-                SelectedOne.Artist = TitleTextBox.Text;
-                SelectedOne.Album = TitleTextBox.Text;
+                SelectedOne.Artist = ArtistTextBox.Text;
+                SelectedOne.Album = AlbumTextBox.Text;
 
                 await _songService.UpdateSongAsync(SelectedOne);
             }
@@ -92,7 +101,8 @@ namespace MusicPlayList
                     string artist = file.Tag.FirstPerformer ?? "Unknown Artist";
                     var newSong = new Song
                     {
-                        Title = System.IO.Path.GetFileNameWithoutExtension(fileName),
+                        //Title = System.IO.Path.GetFileNameWithoutExtension(fileName),
+                        Title = file.Tag.Title,
                         Artist = artist,
                         Album = fileName
                     };
@@ -102,7 +112,8 @@ namespace MusicPlayList
                 // Update the UI to reflect the selected songs
                 // For example, you can display the selected songs in a ListBox
                 SongsListBox.ItemsSource = null;
-                SongsListBox.ItemsSource = SelectedSongs.Select(song => song.Title).ToList();
+                SongsListBox.ItemsSource = SelectedSongs;
+                SongsListBox.DisplayMemberPath = "Title";
                 if (SelectedSongs.Count > 1)
                 {
                     TitleLabel.Visibility = Visibility.Hidden;
@@ -117,10 +128,32 @@ namespace MusicPlayList
                 {
                     var file = TagLib.File.Create(openFileDialog.FileName);
                     string artist = file.Tag.FirstPerformer ?? "Unknown Artist";
-                    TitleTextBox.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                    //TitleTextBox.Text = System.IO.Path.GetFileNameWithoutExtension(openFileDialog.FileName);
+                    TitleTextBox.Text = file.Tag.Title;
                     ArtistTextBox.Text = SelectedSongs.First().Artist;
                     AlbumTextBox.Text = SelectedSongs.First().Album;
                 }
+            }
+        }
+
+        private void SongsListBox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (SongsListBox.SelectedItem is Song selectedSong)
+            {
+                // Hiển thị thông tin bài hát đã chọn
+                TitleTextBox.Text = selectedSong.Title;
+                ArtistTextBox.Text = selectedSong.Artist;
+                AlbumTextBox.Text = selectedSong.Album;
+
+                // Cập nhật biến SelectedOne để xử lý update
+                //SelectedOne = selectedSong;
+
+                // Hiện các textbox nếu chúng bị ẩn
+                TitleLabel.Visibility = Visibility.Visible;
+                TitleTextBox.Visibility = Visibility.Visible;
+                ArtistLabel.Visibility = Visibility.Visible;
+                ArtistTextBox.Visibility = Visibility.Visible;
+                AlbumTextBox.Visibility = Visibility.Visible;
             }
         }
     }
