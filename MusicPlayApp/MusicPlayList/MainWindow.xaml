@@ -5,7 +5,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="av" x:Class="MusicPlayList.MainWindow"
     Title="Music/Video Player" Height="900" Width="1200" WindowStartupLocation="CenterScreen"
-    Background="#FF5BA5FF">
+    Background="#FF5BA5FF" >
 
     <Window.Resources>
         <!-- Modern Button Style -->
