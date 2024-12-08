@@ -4,8 +4,8 @@
     xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="av" x:Class="MusicPlayList.MainWindow"
-    Title="Music/Video Player" Height="700" Width="1100" WindowStartupLocation="CenterScreen"
-    Background="#121212">
+    Title="Music/Video Player" Height="900" Width="1200" WindowStartupLocation="CenterScreen"
+    Background="#FF030D19">
 
     <Window.Resources>
         <!-- Modern Button Style -->
@@ -20,11 +20,13 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border" Background="{TemplateBinding Background}"
-                                BorderThickness="0"
-                                Padding="{TemplateBinding Padding}">
+                        BorderThickness="0"
+                        Padding="{TemplateBinding Padding}"
+                        CornerRadius="10">
+                            <!-- Added CornerRadius here -->
                             <Border.Effect>
                                 <DropShadowEffect ShadowDepth="2" Direction="320" 
-                                                Color="#66000000" BlurRadius="10" Opacity="0.3"/>
+                                        Color="#66000000" BlurRadius="10" Opacity="0.3"/>
                             </Border.Effect>
                             <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
                         </Border>
@@ -34,12 +36,78 @@
                                 <Setter Property="Effect" TargetName="border">
                                     <Setter.Value>
                                         <DropShadowEffect ShadowDepth="4" Direction="320" 
-                                                        Color="#66000000" BlurRadius="15" Opacity="0.5"/>
+                                                Color="#66000000" BlurRadius="15" Opacity="0.5"/>
                                     </Setter.Value>
                                 </Setter>
                             </Trigger>
                             <Trigger Property="IsPressed" Value="True">
-                                <Setter Property="Background" Value="#1DB954" TargetName="border"/>
+                                <Setter Property="Background" Value="#FF34CCFF" TargetName="border"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="IconButton" TargetType="Button">
+            <Setter Property="Background" Value="#282828"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="0"/>
+            <!-- Adjusted for icon-only buttons -->
+            <Setter Property="Width" Value="40"/>
+            <!-- Set width and height for consistent circle -->
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border" 
+                        Background="{TemplateBinding Background}" 
+                        BorderThickness="0" 
+                        Padding="{TemplateBinding Padding}" 
+                        Width="{TemplateBinding Width}" 
+                        Height="{TemplateBinding Height}" 
+                        CornerRadius="20">
+                            <!-- Circular shape -->
+                            <Border.Effect>
+                                <DropShadowEffect ShadowDepth="2" Direction="320" 
+                                          Color="#66000000" BlurRadius="10" Opacity="0.3"/>
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Hover Effect -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" TargetName="border">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#FF34CCFF" Offset="0.0"/>
+                                            <GradientStop Color="#FF9CEFFF" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Effect" TargetName="border">
+                                    <Setter.Value>
+                                        <DropShadowEffect ShadowDepth="0" 
+                                                  Color="#FF34CCFF" 
+                                                  BlurRadius="20" 
+                                                  Opacity="0.8"/>
+                                        <!-- Glow effect -->
+                                    </Setter.Value>
+                                </Setter>
+                            </Trigger>
+
+                            <!-- Click Effect -->
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter Property="Background" TargetName="border">
+                                    <Setter.Value>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                                            <GradientStop Color="#FF34CCFF" Offset="0.0"/>
+                                            <GradientStop Color="#FF9CEFFF" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Setter.Value>
+                                </Setter>
+                                <Setter Property="Opacity" Value="0.8" TargetName="border"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -67,7 +135,7 @@
                             <Border x:Name="TrackBackground" Height="4" Background="#333333"/>
                             <Border x:Name="PART_SelectionRange"
                                     Height="4"
-                                    Background="#1DB954"
+                                    Background="#FF34CCFF"
                                     HorizontalAlignment="Left"/>
                             <Track x:Name="PART_Track">
                                 <Track.DecreaseRepeatButton>
@@ -77,7 +145,7 @@
                                     <Thumb>
                                         <Thumb.Template>
                                             <ControlTemplate TargetType="Thumb">
-                                                <Ellipse Width="12" Height="12" Fill="#1DB954">
+                                                <Ellipse Width="12" Height="12" Fill="#FF34CCFF">
                                                     <Ellipse.Effect>
                                                         <DropShadowEffect BlurRadius="4" 
                                                                         ShadowDepth="2" 
@@ -111,7 +179,7 @@
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsSelected" Value="True">
-                                <Setter Property="Background" Value="#1DB954" TargetName="border"/>
+                                <Setter Property="Background" Value="#FF34CCFF" TargetName="border"/>
                                 <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                             <Trigger Property="IsMouseOver" Value="True">
@@ -137,27 +205,28 @@
     <!-- Phần Grid chính và nội dung còn lại giữ nguyên như trước -->
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="280"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="280"/>
+            <ColumnDefinition Width="507"/>
+            <ColumnDefinition/>
+            <ColumnDefinition Width="0"/>
         </Grid.ColumnDefinitions>
 
         <!-- Left Panel - Playlist -->
-        <Border Grid.Column="0" Background="#181818" Margin="10" 
-                BorderThickness="1" BorderBrush="#333333">
+        <Border Grid.Column="0" Background="#FF232323" Margin="10,31,10,126" 
+                BorderThickness="1" BorderBrush="#333333" >
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="5" 
                                 Opacity="0.3" Color="#000000"/>
             </Border.Effect>
-            <DockPanel>
-                <Border DockPanel.Dock="Top" Background="#1DB954">
-                    <TextBlock Text="Song/Videos" FontWeight="Bold" 
-                             Foreground="White" FontSize="18" 
-                             Margin="20,15"/>
+            <DockPanel Margin="0,-27,0,331">
+                <Border DockPanel.Dock="Top" Background="#FF34CCFF" Height="54"
+                        CornerRadius="10">
+                    <TextBlock Text="Songs and Videos" FontWeight="Bold" 
+                             Foreground="White" FontSize="18" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,11,0,10"
+                            />
                 </Border>
 
-                <StackPanel DockPanel.Dock="Bottom" Margin="12" Width="230">
-                    <StackPanel Orientation="Horizontal" Width="220">
+                <StackPanel DockPanel.Dock="Bottom" Margin="12" Width="452">
+                    <StackPanel Orientation="Horizontal" Width="387">
                         <TextBox x:Name="SearchBox" 
                              Background="#282828"
                              Foreground="White" 
@@ -165,17 +234,13 @@
                              Padding="15,5"
                              Margin="0,0,0,0"
                              TextChanged="SearchBox_TextChanged"
-                             BorderBrush="DarkKhaki" Width="188"/>
+                             BorderBrush="DarkKhaki" Width="357"/>
                         <Image Source="search_icon.png" Width="25" Height="25" Margin="5,0,5,0"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
-                    <Button Content="Import Music" Style="{StaticResource ModernButton}"
-                            Click="ImportButton_Click"/>
-                    <Button Content="Update Music" Style="{StaticResource ModernButton}"
-                            x:Name="UpdateButton" Click="UpdateButton_Click" Width="107"/>
+
                     </StackPanel>
-                    <Button x:Name="Logout" Content="Logout" Background="#ff0000" Style="{StaticResource ModernButton}"
-                    />
+
                 </StackPanel>
 
                 <ListBox x:Name="playlistListBox" Style="{StaticResource ModernListBox}"
@@ -184,7 +249,7 @@
         </Border>
 
         <!-- Center Panel - Player -->
-        <Grid Grid.Column="1" Margin="10">
+        <Grid Grid.Column="1" Margin="10,10,10,10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
@@ -225,7 +290,7 @@
                             <Grid>
                                 <Ellipse Width="60" Height="60" 
                                 Fill="#121212"
-                                Stroke="#1DB954"
+                                Stroke="#FF34CCFF"
                                 StrokeThickness="2"/>
                                 <Image x:Name="CDImage" 
                                Stretch="Uniform"
@@ -247,7 +312,7 @@
             </Grid>
 
             <!-- Song Info and Controls -->
-            <StackPanel Grid.Row="2" Margin="0,20">
+            <StackPanel Grid.Row="2" Margin="0,20,0,0" Height="237" VerticalAlignment="Top">
                 <TextBox x:Name="txtText" 
                          Background="Transparent" 
                          Foreground="White"
@@ -283,74 +348,106 @@
 
                 <!-- Playback Controls -->
                 <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Center" 
-                            Margin="0,25">
-                    <Button Content="Previous" Width="90" 
-                            Style="{StaticResource ModernButton}"
-                            Click="Button_Click_1"/>
+            HorizontalAlignment="Center" 
+            Margin="0,25" 
+            Width="613">
+                    <Button x:Name="PlaybackModeButton" Width="140" Margin="0,0,70,0"  Style="{StaticResource IconButton}" Click="PlaybackModeButton_Click">
+                        <!-- StackPanel for displaying both image and text together -->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100">
+                            <Image x:Name="PlaybackModeIcon" Source="shuffle.png" Margin="0,0,10,0" Width="30" Height="30" />
+                            <TextBlock x:Name="PlaybackModeText" Text="Shuffle" VerticalAlignment="Center" Foreground="White" />
+                        </StackPanel>
+                    </Button>
+                    <!-- Back Button -->
+                    <Button Click="Button_Click_1" 
+            Style="{StaticResource IconButton}" 
+            Background="Transparent" 
+            BorderThickness="0" 
+            Padding="0" 
+            Margin="0,0,40,0">
+                        <Image Source="back.png" Width="40" Height="40"/>
+                    </Button>
+
+                    <!-- Pause Button -->
                     <Button x:Name="PauseButton" 
-                            Content="Pause" 
-                            Width="90"
-                            Style="{StaticResource ModernButton}"
-                            Background="#8c1010"
-                            Margin="10,5"
-                            Click="PauseButton_Click"/>
-                    <Button Content="Next" Width="90" 
-                            Style="{StaticResource ModernButton}"
-                            Click="Button_Click"/>
+            Style="{StaticResource IconButton}" 
+            Margin="0" 
+            Click="PauseButton_Click">
+                        <Image x:Name="PausePlayButtonIcon" Source="play.png" Width="40" Height="40"/>
+                    </Button>
+
+                    <!-- Next Button -->
+                    <Button Click="Button_Click" 
+            Style="{StaticResource IconButton}" 
+            Background="Transparent" 
+            BorderThickness="0" 
+            Padding="0" 
+            Margin="40,0,0,0">
+                        <Image Source="next-button.png" Width="40" Height="40" RenderTransformOrigin="0.5,0.5">
+                            <Image.RenderTransform>
+                                <TransformGroup>
+                                    <ScaleTransform/>
+                                    <SkewTransform/>
+                                    <RotateTransform Angle="180"/>
+                                    <TranslateTransform/>
+                                </TransformGroup>
+                            </Image.RenderTransform>
+                        </Image>
+                    </Button>
+                    <Button x:Name="Addbtn" Margin="70,0,0,0" Content="Add to Favorite" 
+        Style="{StaticResource ModernButton}"
+        Click="Addbtn_Click"/>
                 </StackPanel>
 
-                <!-- Playback Mode -->
-                <StackPanel Orientation="Horizontal" 
-                            HorizontalAlignment="Center"
-                            Margin="0,10">
-                    <Button x:Name="PlaybackModeButton"  Content="Shuffle" Width="100"
-                            Style="{StaticResource ModernButton}"
-                            Click="PlaybackModeButton_Click"/>
 
-                    <TextBlock x:Name="PlayMode" Foreground="White"/>
+
+                <!-- Playback Mode -->
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0">
+                    <StackPanel Width="407" >
+                        <TextBlock x:Name="VolumeText" 
+               Text="Volume: 100%" 
+               Foreground="#B3B3B3"
+               HorizontalAlignment="Center"
+               Margin="0,0,0,8"/>
+                        <Slider x:Name="volumeSlider" 
+            Style="{StaticResource ModernSlider}"
+            Minimum="0" Maximum="100"
+            Value="100"
+            ValueChanged="VolumeSlider_ValueChanged"/>
+                    </StackPanel>
+
                 </StackPanel>
             </StackPanel>
         </Grid>
 
         <!-- Right Panel - Favorites -->
-        <Border Grid.Column="2" Background="#181818" Margin="10" 
+        <Border Background="#FF232323"  Margin="10,442,10,10" 
                 BorderThickness="1" BorderBrush="#333333">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="5" 
                                 Opacity="0.3" Color="#000000"/>
             </Border.Effect>
-            <DockPanel>
-                <Border DockPanel.Dock="Top" Background="#1DB954">
+            <DockPanel Margin="0,9,0,0">
+                <Border DockPanel.Dock="Top" Background="#FF34CCFF" Height="49" CornerRadius="10">
                     <TextBlock Text="Favorite List" 
                              FontWeight="Bold" Foreground="White" 
-                             FontSize="18" Margin="20,15"/>
+                             FontSize="18" TextAlignment="Center" Margin="0,10,0,-10"/>
                 </Border>
 
-                <StackPanel DockPanel.Dock="Bottom" Margin="15">
-                    <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,10">
-                        <Button x:Name="Addbtn" Content="Add to Favorite" 
-                                Style="{StaticResource ModernButton}"
-                                Click="Addbtn_Click"/>
-                        <Button x:Name="DeleteBtn" Content="Delete"
-                                Style="{StaticResource ModernButton}"
-                                Click="DeleteBtn_Click"/>
+                <StackPanel DockPanel.Dock="Bottom" Margin="15" Width="350">
+                    <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,10" Width="358">
+                        <Button Content="Import" Margin ="10" Style="{StaticResource IconButton}"
+    Click="ImportButton_Click" Width="104"/>
+                        <Button Content="Update" Style="{StaticResource IconButton}"
+    x:Name="UpdateButton" Click="UpdateButton_Click" Width="103"/>
+                        <Button x:Name="DeleteBtn" Margin ="10" Content="Delete"
+                                Style="{StaticResource IconButton}"
+                                Click="DeleteBtn_Click" Width="102"/>
                     </WrapPanel>
-                   
+
 
                     <!-- Volume Control -->
-                    <StackPanel Margin="0,10">
-                        <TextBlock x:Name="VolumeText" 
-                                   Text="Volume: 100%" 
-                                   Foreground="#B3B3B3"
-                                   HorizontalAlignment="Center"
-                                   Margin="0,0,0,8"/>
-                        <Slider x:Name="volumeSlider" 
-                                Style="{StaticResource ModernSlider}"
-                                Minimum="0" Maximum="100"
-                                Value="100"
-                                ValueChanged="VolumeSlider_ValueChanged"/>
-                    </StackPanel>
+
                 </StackPanel>
 
                 <ListBox x:Name="FavoriteListBox" 
@@ -360,5 +457,5 @@
             </DockPanel>
         </Border>
     </Grid>
-    </Window>
+</Window>
     
