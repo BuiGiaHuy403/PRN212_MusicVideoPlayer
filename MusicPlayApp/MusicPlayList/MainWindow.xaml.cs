@@ -1034,5 +1034,46 @@ namespace MusicPlayList
                 FavoriteListBox.Items.Add(song);
             }
         }
+
+        private async void FilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string filterMode = FilterBtn.Content.ToString();
+
+            // Search in the playlist
+            var PlaylistSongs = await _songService.GetAllSongsAsync();
+
+            // Search in the favorite list
+            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
+            if (filterMode == "All")
+            {
+                PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")).ToList();
+                FilterBtn.Content = "Songs";
+            }
+            else if (filterMode == "Songs")
+            {
+                PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")).ToList();
+                FilterBtn.Content = "Video";
+            }
+            else
+            {
+                FilterBtn.Content = "All";
+            }
+
+            // Update the playlistListBox
+            playlistListBox.Items.Clear();
+            foreach (var song in PlaylistSongs)
+            {
+                playlistListBox.Items.Add(song.Title);
+            }
+
+            // Update the FavoriteListBox
+            FavoriteListBox.Items.Clear();
+            foreach (var song in favoriteSongs)
+            {
+                FavoriteListBox.Items.Add(song);
+            }
+        }
     }
 }
