@@ -1038,22 +1038,23 @@ namespace MusicPlayList
         private async void FilterBtn_Click(object sender, RoutedEventArgs e)
         {
             string filterMode = FilterBtn.Content.ToString();
+            string query = SearchBox.Text.ToLower();
 
             // Search in the playlist
-            var PlaylistSongs = await _songService.GetAllSongsAsync();
+            var PlaylistSongs = await _songService.SearchSongsAsync(query);
 
             // Search in the favorite list
             var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
             if (filterMode == "All")
             {
                 PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")).ToList();
-                favoriteSongs = favoriteSongs.Where(s => s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => (s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")) && (s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query))).ToList();
                 FilterBtn.Content = "Songs";
             }
             else if (filterMode == "Songs")
             {
                 PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")).ToList();
-                favoriteSongs = favoriteSongs.Where(s => s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => (s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")) || (s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query))).ToList();
                 FilterBtn.Content = "Video";
             }
             else
