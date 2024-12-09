@@ -320,7 +320,7 @@ namespace MusicPlayList
                         mediaPlayer.Source = new Uri(filePath);
                         mediaPlayer.Play();
                         timer.Start();
-                        txtText.Text = $"{selectedSong.Title}  {selectedSong.Artist}";
+                        txtText.Text = $"{selectedSong.Title} - {selectedSong.Artist}";
                         PausePlayButtonIcon.Source = new BitmapImage(new Uri("pause.png", UriKind.Relative));
                     }
                     else
@@ -390,7 +390,7 @@ namespace MusicPlayList
                 if (selectedSong != null)
                 {
                     var album = selectedSong.Album;
-                    txtText.Text = $"{selectedSong.Title}  {selectedSong.Artist}";
+                    txtText.Text = $"{selectedSong.Title} - {selectedSong.Artist}";
 
                     if (File.Exists(album))
                     {
@@ -665,7 +665,7 @@ namespace MusicPlayList
                 if (selectedSong != null)
                 {
                     var album = selectedSong.Album;
-                    txtText.Text = $"{selectedSong.Title}  {selectedSong.Artist}";
+                    txtText.Text = $"{selectedSong.Title} - {selectedSong.Artist}";
 
                     if (File.Exists(album))
                     {

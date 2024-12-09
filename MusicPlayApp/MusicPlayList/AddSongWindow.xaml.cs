@@ -64,7 +64,7 @@ namespace MusicPlayList
                 // Create a new Song object
                 var newSong = new Song
                 {
-                    Title = title,
+                    Title = title.Split('-')[0],
                     Artist = artist,
                     Album = albumFilePath
                 };
