@@ -751,96 +751,89 @@ namespace MusicPlayList
         }
 
         // Method to play a random song without repetition until all songs have been played
+
         private void PlayRandomSong(List<Song> songList, ListBox listBox)
+        {
+            if (isPlayingFromFavoriteList)
+            {
+                if (favoriteList.Count == 0)
+                {
+                    MessageBox.Show("Favorite list is empty.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Phát bài ngẫu nhiên từ favorite list
+                PlayRandomSongFromList(favoriteList, FavoriteListBox);
+            }
+            else if (isPlayingFromPlaylist)
+            {
+                if (playlist.Count == 0)
+                {
+                    MessageBox.Show("Playlist is empty.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+
+                // Phát bài ngẫu nhiên từ playlist
+                PlayRandomSongFromList(playlist, playlistListBox);
+            }
+        }
+
+        // Hàm hỗ trợ phát bài ngẫu nhiên
+        private void PlayRandomSongFromList(List<Song> songList, ListBox listBox)
         {
             if (songList.Count == 0) return;
 
             var random = new Random();
             int nextSongIndex;
 
-            // If all songs have been played, reset the playedIndices list
             if (playedIndices.Count >= songList.Count)
             {
                 playedIndices.Clear();
             }
 
-            // Find a new random index that has not been played
             do
             {
                 nextSongIndex = random.Next(songList.Count);
             } while (playedIndices.Contains(nextSongIndex));
 
-            // Add the new song index to playedIndices
             playedIndices.Add(nextSongIndex);
 
-            // Play the selected song
-            var nextSong = songList[nextSongIndex];
-            var album = nextSong.Album;
-            txtText.Text = $"{nextSong.Title}  {nextSong.Artist}";
+            listBox.SelectedIndex = nextSongIndex;
 
-            if (File.Exists(album))
-            {
-                mediaPlayer.Source = new Uri(album);
-                mediaPlayer.Play();
-                timer.Start();
-
-                // Update the selected item in the ListBox
-                listBox.SelectedItem = nextSong;
-            }
-            else
-            {
-                MessageBox.Show($"Không tìm thấy tệp: {album}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-            }
+            PlaySelectedSong(songList, listBox);
         }
+
 
         // Method to play the next song in sequential mode
         private void PlayNextSequentialSong(List<Song> songList, ListBox listBox)
         {
-            if (songList.Count == 0) return;
-
-            int currentIndex = songList.FindIndex(s => s.Title == txtText.Text);
-
-            // Check if we are at the last song in the list
-            if (currentIndex >= 0 && currentIndex < songList.Count - 1)
+            if (isPlayingFromFavoriteList)
             {
-                var nextSong = songList[currentIndex + 1];
-                var album = nextSong.Album;
-                txtText.Text = $"{nextSong.Title}  {nextSong.Artist}";
-
-                if (File.Exists(album))
+                if (favoriteList.Count == 0)
                 {
-                    mediaPlayer.Source = new Uri(album);
-                    mediaPlayer.Play();
-                    timer.Start();
+                    MessageBox.Show("Favorite list is empty.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-                    // Update the selected item in the ListBox
-                    listBox.SelectedItem = nextSong;
-                }
-                else
-                {
-                    MessageBox.Show($"Không tìm thấy tệp: {album}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                // Di chuyển đến bài tiếp theo trong favorite list
+                int currentIndex = FavoriteListBox.SelectedIndex;
+                FavoriteListBox.SelectedIndex = (currentIndex < favoriteList.Count - 1) ? currentIndex + 1 : 0;
+
+                PlaySelectedSong(favoriteList, FavoriteListBox);
             }
-            else
+            else if (isPlayingFromPlaylist)
             {
-                // Reached the end of the list, go back to the first song
-                var firstSong = songList[0];
-                var album = firstSong.Album;
-                txtText.Text = $"{firstSong.Title}  {firstSong.Artist}";
-
-                if (File.Exists(album))
+                if (playlist.Count == 0)
                 {
-                    mediaPlayer.Source = new Uri(album);
-                    mediaPlayer.Play();
-                    timer.Start();
+                    MessageBox.Show("Playlist is empty.", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
 
-                    // Update the selected item to the first song in the ListBox
-                    listBox.SelectedItem = firstSong;
-                }
-                else
-                {
-                    MessageBox.Show($"Không tìm thấy tệp: {album}", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
-                }
+                // Di chuyển đến bài tiếp theo trong playlist
+                int currentIndex = playlistListBox.SelectedIndex;
+                playlistListBox.SelectedIndex = (currentIndex < playlist.Count - 1) ? currentIndex + 1 : 0;
+
+                PlaySelectedSong(playlist, playlistListBox);
             }
         }
 
