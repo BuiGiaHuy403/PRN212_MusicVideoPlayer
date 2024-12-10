@@ -1,5 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using MusicPlayApp.DAL.Entities;
+﻿using MusicPlayApp.DAL.Entities;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -13,10 +12,6 @@ namespace MusicPlayApp.DAL.Repository
     public class FavoriteRepo
     {
         private const string FileName = "favoriteLists.json";
-        //private int GetNextId(List<FavoriteList> favoritelists)
-        //{
-        //    return favoritelists.Any() ? (favoritelists.Max(f => f.FavoriteListId) ?? 0) + 1 : 1;
-        //}
         public async Task AddFavoriteAsync(int songId, string listName)
         {
             var favoriteLists = await JsonDatabase.ReadAsync<FavoriteList>(FileName);
