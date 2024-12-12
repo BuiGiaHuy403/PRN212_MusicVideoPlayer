@@ -990,6 +990,13 @@ namespace MusicPlayList
             }
         }
 
+        private void SpotifyOpen_Click(object sender, RoutedEventArgs e)
+        {
+            SpotifyWindow spotifyWindow = new SpotifyWindow();
+            this.Hide();
+            spotifyWindow.Show();
+            this.Show();
+        }
         private async void FilterBtn_Click(object sender, RoutedEventArgs e)
         {
             string filterMode = FilterBtn.Content.ToString();
