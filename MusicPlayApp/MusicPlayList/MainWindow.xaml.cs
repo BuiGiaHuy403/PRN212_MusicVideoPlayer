@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using MusicPlayApp.BLL.Service;
 using MusicPlayApp.DAL.Entities;
 using MusicPlayApp.DAL.Repository;
@@ -36,7 +35,6 @@ namespace MusicPlayList
 
         private readonly SongService _songService;
         private readonly PlaylistService _playlistService;
-        private readonly UserService _userService;
         private readonly FavoriteService _favoriteService;
 
         
@@ -55,13 +53,11 @@ namespace MusicPlayList
             // Initialize repositories
             var songRepository = new SongRepository();
             var playlistRepo = new PlaylistRepo();
-            var userRepo = new UserRepo();
             var favoriteRepo = new FavoriteRepo();
 
             // Initialize services
             _songService = new SongService(songRepository);
             _playlistService = new PlaylistService(playlistRepo);
-            _userService = new UserService(userRepo);
             _favoriteService = new FavoriteService(favoriteRepo, songRepository);
 
             LoadTitleAllSongs();
@@ -605,21 +601,7 @@ namespace MusicPlayList
         {
 
 
-        }
-
-        //public async void LoadUserSongs()
-        //{
-        //    var playlist = await _songService.GetSongsByUserIdAsync(CurrentUser.UserId);
-        //    foreach (var song in songs)
-        //    {
-        //        playlist.Add(song.Title);
-        //        playlistListBox.Items.Add(song.Title);
-        //    }
-        //    if(songs == null)
-        //    {
-        //        return;
-        //    }
-        //}
+        } 
 
         public async Task LoadTitleAllSongs()
         {
@@ -971,34 +953,6 @@ namespace MusicPlayList
             catch (Exception ex)
             {
                 MessageBox.Show($"Error loading playlist: {ex.Message}");
-            }
-        }
-
-        private async void AddSongToPlaylist(Song song)
-        {
-            try
-            {
-                await _songService.AddSongAsync(song);
-                playlist.Add(song);
-                // Update UI
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error adding song: {ex.Message}");
-            }
-        }
-
-        private async void RemoveSongFromPlaylist(Song song)
-        {
-            try
-            {
-                await _songService.RemoveSongAsync(song);
-                playlist.Remove(song);
-                // Update UI
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error removing song: {ex.Message}");
             }
         }
 
