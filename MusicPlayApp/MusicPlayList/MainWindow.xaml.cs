@@ -1034,5 +1034,13 @@ namespace MusicPlayList
                 FavoriteListBox.Items.Add(song);
             }
         }
+
+        private void SpotifyOpen_Click(object sender, RoutedEventArgs e)
+        {
+            SpotifyWindow spotifyWindow = new SpotifyWindow();
+            this.Hide();
+            spotifyWindow.Show();
+            this.Show();
+        }
     }
 }

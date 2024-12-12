@@ -258,6 +258,7 @@
 
             <!-- Player Container -->
             <Grid Grid.Row="1" x:Name="playerContainer">
+
                 <Grid.RowDefinitions>
                     <RowDefinition Height="426*"/>
                     <RowDefinition Height="181*"/>
@@ -311,6 +312,7 @@
                         </Border>
                     </Grid>
                 </Border>
+                <Button Content="Spotify Window" HorizontalAlignment="Left" Margin="543,29,0,0" VerticalAlignment="Top" Height="45" Width="100" Style="{StaticResource IconButton}" Click="SpotifyOpen_Click"/>
             </Grid>
 
             <!-- Song Info and Controls -->
@@ -420,6 +422,9 @@
                     </StackPanel>
 
                 </StackPanel>
+                <Button x:Name="Addbtn_Copy" Content="Add to Favorite" 
+                    Style="{StaticResource ModernButton}"
+                    Click="Addbtn_Click"/>
             </StackPanel>
         </Grid>
 

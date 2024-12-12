@@ -4,9 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicPlayList"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
         mc:Ignorable="d"
-        Title="SpotifyWindow" Height="450" Width="800">
+        Title="SpotifyWindow" Height="850" Width="1000" WindowStartupLocation="CenterScreen">
     <Grid>
-        
+        <wv2:WebView2 x:Name="WebView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" />
+
     </Grid>
 </Window>
