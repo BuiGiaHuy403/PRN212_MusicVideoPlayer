@@ -541,8 +541,9 @@ namespace MusicPlayList
                                     await _favoriteService.AddFavoriteAsync(songId, "My Favorite List");
                                     // Reload the favorite list
                                     await LoadFavoriteList();
-
+                                    
                                     MessageBox.Show("The song has been added to your favorite list.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                favoriteList.Add(selectedSong);
                                 }
                             }
                             catch (Exception ex)
