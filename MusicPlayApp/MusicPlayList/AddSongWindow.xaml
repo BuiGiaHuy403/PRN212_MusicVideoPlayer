@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MusicPlayList"
         mc:Ignorable="d"
-        Title="Modify Playlist Window" Height="600" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#FF5BA5FF" FontFamily="Segoe UI"  >
+        Title="Modify Playlist Window" Height="600" Width="800" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" Background="#FF5BA5FF" FontFamily="Roboto" FontSize="17"  >
 
     <Window.Resources>
         <Style x:Key="ModernButton" TargetType="Button">
