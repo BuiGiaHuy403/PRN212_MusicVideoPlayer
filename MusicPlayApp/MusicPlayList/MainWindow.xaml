@@ -4,7 +4,7 @@
     xmlns:av="http://schemas.microsoft.com/expression/blend/2008" 
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
     mc:Ignorable="av" x:Class="MusicPlayList.MainWindow"
-    Title="Music/Video Player" Height="900" Width="1200" WindowStartupLocation="CenterScreen"
+    Title="Music/Video Player" Height="800" Width="1200" WindowStartupLocation="CenterScreen" FontFamily="Roboto" FontSize="17"
     Background="#FF5BA5FF" >
 
     <Window.Resources>
@@ -211,14 +211,14 @@
         </Grid.ColumnDefinitions>
 
         <!-- Left Panel - Playlist -->
-        <Border Grid.Column="0" Background="#FF232323" Margin="10,31,10,126" 
+        <Border Grid.Column="0" Background="#FF232323" Margin="10,31,10,71" 
                 BorderThickness="1" BorderBrush="#333333" >
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="5" 
                                 Opacity="0.3" Color="#000000"/>
             </Border.Effect>
             <DockPanel Margin="0,-27,0,331">
-                <Border DockPanel.Dock="Top" Background="#FF34CCFF" Height="54"
+                <Border DockPanel.Dock="Top" Background="#FF34CCFF" Height="48"
                         CornerRadius="10">
                     <TextBlock Text="Songs and Videos" FontWeight="Bold" 
                              Foreground="White" FontSize="18" TextAlignment="Center" HorizontalAlignment="Center" Margin="0,11,0,10"
@@ -226,16 +226,19 @@
                 </Border>
 
                 <StackPanel DockPanel.Dock="Bottom" Margin="12" Width="452">
-                    <StackPanel Orientation="Horizontal" Width="387">
+                    <StackPanel Orientation="Horizontal" Width="400
+                                ">
+                        <Image Source="search_icon.png" Width="25" Height="25"  Margin="5,0,5,0" RenderTransformOrigin="2.443,0.633"/>
                         <TextBox x:Name="SearchBox" 
                              Background="#282828"
                              Foreground="White" 
                              BorderThickness="0.5"
                              Padding="15,5"
-                             Margin="0,0,0,0"
+                                 Margin="0,0,20,0"
                              TextChanged="SearchBox_TextChanged"
-                             BorderBrush="DarkKhaki" Width="357"/>
-                        <Image Source="search_icon.png" Width="25" Height="25" Margin="5,0,5,0"/>
+                             BorderBrush="DarkKhaki" Width="223"/>
+                        <Button x:Name="FilterBtn" Content="All" Style="{StaticResource IconButton}"
+ Width="110" Click="FilterBtn_Click"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal">
 
@@ -337,7 +340,7 @@
                     <TextBlock x:Name="currentTimeText" 
                               Text="00:00" 
                               Foreground="black" 
-                              Margin="5,0"/>
+                              Margin="5,0" FontWeight="Bold"/>
                     <Slider x:Name="TimeCount" Grid.Column="1"
                             Style="{StaticResource ModernSlider}"
                             Minimum="0" Maximum="100"
@@ -347,14 +350,14 @@
                               Grid.Column="2" 
                               Text="00:00" 
                               Foreground="black" 
-                              Margin="5,0"/>
+                              Margin="5,0" FontWeight="Bold"/>
                 </Grid>
 
                 <!-- Playback Controls -->
                 <StackPanel Orientation="Horizontal" 
             HorizontalAlignment="Center" 
             Margin="0,25" 
-            Width="613">
+            Width="622">
                     <Button x:Name="PlaybackModeButton" Width="140" Margin="0,0,70,0"  Style="{StaticResource IconButton}" Click="PlaybackModeButton_Click">
                         <!-- StackPanel for displaying both image and text together -->
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Width="100">
@@ -399,8 +402,8 @@
                         </Image>
                     </Button>
                     <Button x:Name="Addbtn" Margin="70,0,0,0" Content="Add to Favorite" 
-        Style="{StaticResource ModernButton}"
-        Click="Addbtn_Click"/>
+        Style="{StaticResource IconButton}" Background="#FFCB4058"
+        Click="Addbtn_Click" Width="137"/>
                 </StackPanel>
 
 
@@ -413,7 +416,7 @@
                                    FontSize="20"
                Foreground="Black"
                HorizontalAlignment="Center"
-               Margin="0,0,0,8"/>
+               Margin="0,0,0,8" FontWeight="Bold"/>
                         <Slider x:Name="volumeSlider" 
             Style="{StaticResource ModernSlider}"
             Minimum="0" Maximum="100"
@@ -429,7 +432,7 @@
         </Grid>
 
         <!-- Right Panel - Favorites -->
-        <Border Background="#FF232323"  Margin="10,432,10,10" 
+        <Border Background="#FF232323"  Margin="10,374,10,10" 
                 BorderThickness="1" BorderBrush="#333333">
             <Border.Effect>
                 <DropShadowEffect BlurRadius="15" ShadowDepth="5" 
@@ -444,11 +447,11 @@
 
                 <StackPanel DockPanel.Dock="Bottom" Margin="15" Width="350">
                     <WrapPanel HorizontalAlignment="Center" Margin="0,0,0,10" Width="358">
-                        <Button Content="Import" Margin ="10" Style="{StaticResource IconButton}"
+                        <Button Content="Import" Margin ="10" Style="{StaticResource IconButton}" Background="#FF34CCFF"
     Click="ImportButton_Click" Width="104"/>
-                        <Button Content="Update" Style="{StaticResource IconButton}"
+                        <Button Content="Update" Style="{StaticResource IconButton}" Background="#FF148A44"
     x:Name="UpdateButton" Click="UpdateButton_Click" Width="103"/>
-                        <Button x:Name="DeleteBtn" Margin ="10" Content="Delete"
+                        <Button x:Name="DeleteBtn" Margin ="10" Content="Delete" Background="#FF981212"
                                 Style="{StaticResource IconButton}"
                                 Click="DeleteBtn_Click" Width="102"/>
                     </WrapPanel>

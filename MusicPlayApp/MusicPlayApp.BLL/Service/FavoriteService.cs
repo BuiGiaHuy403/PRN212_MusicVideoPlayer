@@ -21,7 +21,7 @@ namespace MusicPlayApp.BLL.Service
         {
             await _favoriteRepo.AddFavoriteAsync(songId, listName);
         }
-        // Kiểm tra xem bài hát đã có trong danh sách yêu thích của người dùng chưa
+        // Kiểm tra xem bài hát đã có trong danh sách yêu thích chưa
         public async Task<bool> CheckIfFavoriteExistsAsync(int songId)
         {
             var favorite = await _favoriteRepo.GetFavoriteBySongIdAsync(songId);

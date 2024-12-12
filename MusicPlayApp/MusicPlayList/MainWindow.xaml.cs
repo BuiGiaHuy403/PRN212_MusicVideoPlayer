@@ -1,5 +1,4 @@
-﻿using Microsoft.VisualBasic.ApplicationServices;
-using Microsoft.Win32;
+﻿using Microsoft.Win32;
 using MusicPlayApp.BLL.Service;
 using MusicPlayApp.DAL.Entities;
 using MusicPlayApp.DAL.Repository;
@@ -36,7 +35,6 @@ namespace MusicPlayList
 
         private readonly SongService _songService;
         private readonly PlaylistService _playlistService;
-        private readonly UserService _userService;
         private readonly FavoriteService _favoriteService;
 
         
@@ -55,13 +53,11 @@ namespace MusicPlayList
             // Initialize repositories
             var songRepository = new SongRepository();
             var playlistRepo = new PlaylistRepo();
-            var userRepo = new UserRepo();
             var favoriteRepo = new FavoriteRepo();
 
             // Initialize services
             _songService = new SongService(songRepository);
             _playlistService = new PlaylistService(playlistRepo);
-            _userService = new UserService(userRepo);
             _favoriteService = new FavoriteService(favoriteRepo, songRepository);
 
             LoadTitleAllSongs();
@@ -545,8 +541,9 @@ namespace MusicPlayList
                                     await _favoriteService.AddFavoriteAsync(songId, "My Favorite List");
                                     // Reload the favorite list
                                     await LoadFavoriteList();
-
+                                    
                                     MessageBox.Show("The song has been added to your favorite list.", "Success", MessageBoxButton.OK, MessageBoxImage.Information);
+                                favoriteList.Add(selectedSong);
                                 }
                             }
                             catch (Exception ex)
@@ -605,21 +602,7 @@ namespace MusicPlayList
         {
 
 
-        }
-
-        //public async void LoadUserSongs()
-        //{
-        //    var playlist = await _songService.GetSongsByUserIdAsync(CurrentUser.UserId);
-        //    foreach (var song in songs)
-        //    {
-        //        playlist.Add(song.Title);
-        //        playlistListBox.Items.Add(song.Title);
-        //    }
-        //    if(songs == null)
-        //    {
-        //        return;
-        //    }
-        //}
+        } 
 
         public async Task LoadTitleAllSongs()
         {
@@ -974,34 +957,6 @@ namespace MusicPlayList
             }
         }
 
-        private async void AddSongToPlaylist(Song song)
-        {
-            try
-            {
-                await _songService.AddSongAsync(song);
-                playlist.Add(song);
-                // Update UI
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error adding song: {ex.Message}");
-            }
-        }
-
-        private async void RemoveSongFromPlaylist(Song song)
-        {
-            try
-            {
-                await _songService.RemoveSongAsync(song);
-                playlist.Remove(song);
-                // Update UI
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error removing song: {ex.Message}");
-            }
-        }
-
         private void InitializeTimer()
         {
             timer = new DispatcherTimer();
@@ -1041,6 +996,47 @@ namespace MusicPlayList
             this.Hide();
             spotifyWindow.Show();
             this.Show();
+        }
+        private async void FilterBtn_Click(object sender, RoutedEventArgs e)
+        {
+            string filterMode = FilterBtn.Content.ToString();
+            string query = SearchBox.Text.ToLower();
+
+            // Search in the playlist
+            var PlaylistSongs = await _songService.SearchSongsAsync(query);
+
+            // Search in the favorite list
+            var favoriteSongs = await _favoriteService.GetFavoritesByUserIdAsync();
+            if (filterMode == "All")
+            {
+                PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => (s.Album.ToLower().Contains(".mp3") || s.Album.ToLower().Contains(".wav")) && (s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query))).ToList();
+                FilterBtn.Content = "Songs";
+            }
+            else if (filterMode == "Songs")
+            {
+                PlaylistSongs = PlaylistSongs.Where(s => s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")).ToList();
+                favoriteSongs = favoriteSongs.Where(s => (s.Album.ToLower().Contains(".mp4") || s.Album.ToLower().Contains(".flac")) || (s.Title.ToLower().Contains(query) || s.Artist.ToLower().Contains(query))).ToList();
+                FilterBtn.Content = "Video";
+            }
+            else
+            {
+                FilterBtn.Content = "All";
+            }
+
+            // Update the playlistListBox
+            playlistListBox.Items.Clear();
+            foreach (var song in PlaylistSongs)
+            {
+                playlistListBox.Items.Add(song.Title);
+            }
+
+            // Update the FavoriteListBox
+            FavoriteListBox.Items.Clear();
+            foreach (var song in favoriteSongs)
+            {
+                FavoriteListBox.Items.Add(song);
+            }
         }
     }
 }
